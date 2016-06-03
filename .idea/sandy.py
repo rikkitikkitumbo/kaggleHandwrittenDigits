@@ -50,6 +50,7 @@ j = tf.fill([4,2],3)
 
 r = tf.matmul(j,g)
 
+t = tf.constant([[1,1,1],[2,2,2]])
 
 print r.get_shape()
 sess.run(r)

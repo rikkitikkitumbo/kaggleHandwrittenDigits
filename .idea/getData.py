@@ -13,6 +13,7 @@ sess = tf.Session()
 # read in the image data from the csv file
 # the format is:    imagelabel  pixel0  pixel1 ... pixel783  (there are 42,000 rows like this)
 data = pd.read_csv('../data/train.csv')
+print data.shape
 labels = data.iloc[:,:1].values.ravel()  # shape = (42000, 1)
 labels_count = np.unique(labels).shape[0]  # = 10
 images = data.iloc[:,1:].values   # shape = (42000, 784)
@@ -24,20 +25,20 @@ image_width = image_height = np.sqrt(image_size).astype(np.int32)  # since these
 # turn all the gray-pixel image-values into percentages of 255
 # a 1.0 means a pixel is 100% black, and 0.0 would be a pixel that is 0% black (or white)
 images = np.multiply(images, 1.0/255)
-
+print images.shape
 
 # create oneHot vectors from the label #s
 oneHots = tf.one_hot(labels, labels_count, 1, 0)  #shape = (42000, 10)
 
 
 #split up the training data even more (into validation and train subsets)
-VALIDATION_SIZE = 41990
-
-validationImages = images[:VALIDATION_SIZE]
-validationLabels = labels[:VALIDATION_SIZE]
-
-trainImages = images[VALIDATION_SIZE:]
-trainLabels = labels[VALIDATION_SIZE:]
+# VALIDATION_SIZE = 41990
+#
+# validationImages = images[:VALIDATION_SIZE]
+# validationLabels = labels[:VALIDATION_SIZE]
+#
+# trainImages = images[VALIDATION_SIZE:]
+# trainLabels = labels[VALIDATION_SIZE:]
 
 def next_batch(index1, index2):
     imgs = images[index1:index2]
@@ -49,9 +50,10 @@ def next_batch(index1, index2):
 
 # display image
 def display(img):
-    one_image = img.reshape(image_width, image_height)
+    sq = np.sqrt(img.shape)
+    one_image = img.reshape(sq, sq)
     plt.axis('off')
-    plt.imshow(one_image, cmap='Greys', clim = (-1.0,1.0))
+    plt.imshow(one_image) #, cmap='Greys', clim = (-1.0,1.0))
     plt.show()
 
 # output image
@@ -180,9 +182,9 @@ with sess.as_default():
 
         if i%25 == 0:
             # display W_fc2 layer
-            # fc_layer = W_fc2_return()
-            # img = fc_layer.eval(feed_dict={x: xx, y_: yy,keep_prob:1})
-            # display(img)
+            fc_layer = W_fc2_return()
+            img = fc_layer.eval(feed_dict={x: xx, y_: yy,keep_prob:1})
+            display(img)
 
             # display the probabilties estimated for each class
             print np.around(y[32, :].eval(feed_dict={x: xx, y_: yy, keep_prob: 1}, session=sess),decimals=2)

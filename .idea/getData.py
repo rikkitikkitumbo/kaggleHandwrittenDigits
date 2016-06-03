@@ -22,6 +22,7 @@ image_size = images.shape[1]
 image_width = image_height = np.sqrt(image_size).astype(np.int32)  # since these images are sqaure... hieght = width
 
 
+
 # turn all the gray-pixel image-values into percentages of 255
 # a 1.0 means a pixel is 100% black, and 0.0 would be a pixel that is 0% black (or white)
 images = np.multiply(images, 1.0/255)
